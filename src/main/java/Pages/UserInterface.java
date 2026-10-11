@@ -64,7 +64,7 @@ public class UserInterface extends JFrame implements ActionListener {
             button.setFont(new Font("Arial", Font.BOLD, 20));
 
             button.setBounds(25, 160 + (i * 100), 250, 75);
-
+            button.addActionListener(this);
             button.setFocusable(false);
 
             button.setBorder(BorderFactory.createLineBorder(ALT_FONTS, 1));
@@ -107,7 +107,7 @@ public class UserInterface extends JFrame implements ActionListener {
     }
 
 
-    UserInterface() {
+    public UserInterface() {
 
         // MAIN FRAME
         setTitle("E-Vote");
@@ -301,8 +301,24 @@ public class UserInterface extends JFrame implements ActionListener {
     }
 
 
+
     @Override
     public void actionPerformed(ActionEvent e) {
 
+            String command = e.getActionCommand();
+
+            switch (command) {
+                case "Home":
+                    System.out.println("Home clicked");
+                    break;
+
+                case "Vote":
+                    System.out.println("Vote clicked");
+                    break;
+
+                case "Account":
+                    dispose();
+                    new AccountStatus();
+            }
+        }
     }
-}
