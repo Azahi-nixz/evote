@@ -109,7 +109,7 @@ public class registerPage extends JFrame implements ActionListener {
         mainUI.add(formCard);
 
         // FORM TITLE
-        registerlbl = new JLabel("Create Account");
+        registerlbl = new JLabel("Verify Account");
         registerlbl.setBounds(40, 15, 400, 40);
         registerlbl.setFont(new Font("Arial", Font.BOLD, 28));
         registerlbl.setForeground(Color.BLACK);
@@ -442,8 +442,6 @@ public class registerPage extends JFrame implements ActionListener {
             valid = false;
         }
 
-        // MIDDLE NAME IS OPTIONAL - NO VALIDATION NEEDED
-
         return valid;
     }
 
@@ -473,13 +471,11 @@ public class registerPage extends JFrame implements ActionListener {
 
             case "Verify Account":
                 if (validateForm()) {
-                    JOptionPane.showMessageDialog(
-                            this,
-                            "All required fields have been completed!",
-                            "Validation Successful",
-                            JOptionPane.INFORMATION_MESSAGE
-                    );
+                    UserRegistry.updateUser("admin12345" , true);
+                    dispose();
+                    new AccountStatus();
                 }
+
                 break;
         }
     }

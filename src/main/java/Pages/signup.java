@@ -5,6 +5,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
+import Pages.UserRegistry;
+
 
 public class signup extends JFrame implements ActionListener {
 
@@ -618,30 +620,16 @@ public class signup extends JFrame implements ActionListener {
                     && !confirmPasswordError.isVisible()
                     && !regionError.isVisible()) {
 
-                String usernameValue = username.getText();
+
+                String usernameValue = username.getText().trim();
                 String passwordValue = String.valueOf(password.getPassword());
                 String regionValue = (String) region.getSelectedItem();
 
                 try {
 
-                    Connection connection = DriverManager.getConnection(
-                            "jdbc:mysql://localhost:3306/swing_demo",
-                            "root",
-                            ""
-                    );
+                    // CHECK HASH TABLE IF USERNAME ALREADY EXISTS
+                    if (UserRegistry.userExists(usernameValue)) {
 
-                    // CHECK IF USERNAME ALREADY EXISTS
-                    PreparedStatement check = connection.prepareStatement(
-                            "SELECT username FROM users WHERE username = ?"
-                    );
-
-                    check.setString(1, usernameValue);
-
-                    ResultSet result = check.executeQuery();
-
-                    if (result.next()) {
-
-                        // USERNAME ALREADY EXISTS
                         usernameError.setText("Username already exists.");
                         usernameError.setVisible(true);
 
@@ -649,28 +637,63 @@ public class signup extends JFrame implements ActionListener {
 
                     } else {
 
-                        // CREATE ACCOUNT
-                        PreparedStatement info = connection.prepareStatement(
-                                "INSERT INTO users (username, password, region) VALUES (?, ?, ?)"
+                        Connection connection = DriverManager.getConnection(
+                                "jdbc:mysql://localhost:3306/swing_demo",
+                                "root",
+                                ""
                         );
 
-                        info.setString(1, usernameValue);
-                        info.setString(2, passwordValue);
-                        info.setString(3, regionValue);
+                        // CHECK DATABASE IF USERNAME ALREADY EXISTS
+                        PreparedStatement check = connection.prepareStatement(
+                                "SELECT username FROM users WHERE username = ?"
+                        );
 
-                        int rows = info.executeUpdate();
+                        check.setString(1, usernameValue);
 
-                        if (rows > 0) {
+                        ResultSet result = check.executeQuery();
 
-                            dispose();
-                            new LogIn();
+                        if (result.next()) {
 
+                            // USERNAME ALREADY EXISTS
+                            usernameError.setText("Username already exists.");
+                            usernameError.setVisible(true);
+
+                            errorBorder(username);
+
+                            // UPDATE HASH TABLE WITH EXISTING USER
+                            UserRegistry.addUser(usernameValue, false);
+
+                        } else {
+
+                            // CREATE ACCOUNT
+                            PreparedStatement info = connection.prepareStatement(
+                                    "INSERT INTO users (username, password, region) VALUES (?, ?, ?)"
+                            );
+
+                            info.setString(1, usernameValue);
+                            info.setString(2, passwordValue);
+                            info.setString(3, regionValue);
+
+                            int rows = info.executeUpdate();
+
+                            if (rows > 0) {
+
+                                // ADD NEW USER TO HASH TABLE
+                                // New accounts start as unverified
+                                UserRegistry.addUser(usernameValue, false);
+
+                                dispose();
+                                new LogIn();
+
+                            }
+
+                            info.close();
                         }
-                    }
 
-                    result.close();
-                    check.close();
-                    connection.close();
+                        result.close();
+                        check.close();
+                        connection.close();
+                    }
 
                 } catch (SQLException sql) {
 
@@ -685,6 +708,10 @@ public class signup extends JFrame implements ActionListener {
                     );
 
                     usernameError.setVisible(true);
+
+                    sql.printStackTrace();
+
+                }
                 }
             }
 
@@ -692,4 +719,4 @@ public class signup extends JFrame implements ActionListener {
 
     }
 
-}
+

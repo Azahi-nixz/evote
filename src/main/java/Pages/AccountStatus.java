@@ -267,8 +267,6 @@ public class AccountStatus extends JFrame implements ActionListener {
         verifiedUI.setVisible(verified);
         notVerifiedUI.setVisible(!verified);
 
-        mainUI.revalidate();
-        mainUI.repaint();
     }
 
 
@@ -301,7 +299,12 @@ public class AccountStatus extends JFrame implements ActionListener {
         notVerifiedPage();
 
 
-        showVerifiedPage(false);
+        if (UserRegistry.isVerified("admin12345")) {
+            showVerifiedPage(true);
+        }
+        else {
+            showVerifiedPage(false);
+        }
 
         setVisible(true);
     }
@@ -321,7 +324,8 @@ public class AccountStatus extends JFrame implements ActionListener {
                 break;
 
             case "Vote":
-                System.out.println("Vote clicked");
+                dispose();
+                new Vote(user.getText());
                 break;
 
             case "Account":

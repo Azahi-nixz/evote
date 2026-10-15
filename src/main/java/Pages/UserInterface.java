@@ -313,7 +313,8 @@ public class UserInterface extends JFrame implements ActionListener {
                     break;
 
                 case "Vote":
-                    System.out.println("Vote clicked");
+                    dispose();
+                    new Vote(user.getText());
                     break;
 
                 case "Account":
