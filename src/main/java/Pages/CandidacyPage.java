@@ -16,8 +16,8 @@ public class CandidacyPage extends JFrame implements ActionListener {
     private final String sideBtn[] = {"Home", "Vote", "Account"};
 
     private String[] parties = {
-            "Select Party", "Liberal Party", "Conservative Party",
-            "Labor Party", "Green Party", "Independent", "Other"
+            "Select Party", "Dilawan", "Pink",
+            "Blue ribbon", "Red ribbon", "Independent", "Other"
     };
 
     private JPanel sideUI, mainUI, formCard, upSeparator, downSeparator;
