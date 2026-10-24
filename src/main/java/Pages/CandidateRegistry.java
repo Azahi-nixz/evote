@@ -19,49 +19,62 @@ public class CandidateRegistry {
     private static final String DB_PASSWORD = "";
 
 
-    // Create table and load pending
+    // Create tables and load pending
     public static void initialize() {
 
-        String sql =
-                "CREATE TABLE IF NOT EXISTS "
-                        + "candidacy_applications ("
-                        + "id INT AUTO_INCREMENT PRIMARY KEY, "
-                        + "candidate_id VARCHAR(255), "
-                        + "name VARCHAR(255), "
-                        + "party VARCHAR(255), "
-                        + "status VARCHAR(20) "
-                        + "DEFAULT 'pending'"
-                        + ")";
+        String[] tables = {
+            "CREATE TABLE IF NOT EXISTS candidates ("
+                + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                + "name VARCHAR(255) NOT NULL, "
+                + "party VARCHAR(255), "
+                + "position VARCHAR(255)"
+                + ")",
 
-        try (
-                Connection connection = DriverManager.getConnection(
-                        DB_URL, DB_USER, DB_PASSWORD
-                );
-                PreparedStatement statement =
-                        connection.prepareStatement(sql)
-        ) {
-            statement.executeUpdate();
+            "CREATE TABLE IF NOT EXISTS election_settings ("
+                + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                + "is_started TINYINT(1) DEFAULT 0"
+                + ")",
+
+            "CREATE TABLE IF NOT EXISTS votes ("
+                + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                + "username VARCHAR(255) NOT NULL, "
+                + "candidate_id INT NOT NULL, "
+                + "UNIQUE KEY unique_vote (username)"
+                + ")",
+
+            "CREATE TABLE IF NOT EXISTS candidacy_applications ("
+                + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                + "candidate_id VARCHAR(255), "
+                + "name VARCHAR(255), "
+                + "party VARCHAR(255), "
+                + "status VARCHAR(20) DEFAULT 'pending', "
+                + "voter_id VARCHAR(255)"
+                + ")"
+        };
+
+        try (Connection connection = DriverManager.getConnection(
+                DB_URL, DB_USER, DB_PASSWORD)) {
+
+            for (String sql : tables) {
+                try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                    stmt.executeUpdate();
+                }
+            }
+
+            // Seed election_settings row if empty
+            try (PreparedStatement check = connection.prepareStatement(
+                    "SELECT COUNT(*) FROM election_settings");
+                 ResultSet rs = check.executeQuery()) {
+                if (rs.next() && rs.getInt(1) == 0) {
+                    connection.prepareStatement(
+                            "INSERT INTO election_settings (is_started) VALUES (0)")
+                            .executeUpdate();
+                }
+            }
+
         } catch (SQLException e) {
-            System.out.println(
-                    "Failed to create candidacy table."
-            );
+            System.out.println("Failed to initialize tables.");
             e.printStackTrace();
-        }
-
-        // ADD voter_id COLUMN IF NOT EXISTS
-        String alterSql =
-                "ALTER TABLE candidacy_applications "
-                        + "ADD COLUMN voter_id VARCHAR(255)";
-
-        try (
-                Connection connection = DriverManager.getConnection(
-                        DB_URL, DB_USER, DB_PASSWORD
-                );
-                PreparedStatement statement =
-                        connection.prepareStatement(alterSql)
-        ) {
-            statement.executeUpdate();
-        } catch (SQLException e) {
         }
 
         loadPendingFromDB();
