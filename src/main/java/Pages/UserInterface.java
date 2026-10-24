@@ -151,7 +151,7 @@ public class UserInterface extends JFrame implements ActionListener {
         electionPanel.setBorder(BorderFactory.createLineBorder(BRAND, 1));
         electionPanel.setBounds(40, 380, 620, 100);
 
-        electionName = new JLabel("Student Council Election");
+        electionName = new JLabel("Election");
         electionName.setFont(new Font("Arial", Font.BOLD, 18));
         electionName.setBounds(20, 15, 350, 30);
 
