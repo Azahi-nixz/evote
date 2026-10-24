@@ -24,6 +24,24 @@ public class UserRegistry {
     // Load users from wamp
     public static void loadUsers() {
 
+        String createTable =
+                "CREATE TABLE IF NOT EXISTS users ("
+                + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                + "username VARCHAR(255) NOT NULL UNIQUE, "
+                + "password VARCHAR(255) NOT NULL, "
+                + "region VARCHAR(255), "
+                + "is_verified TINYINT(1) DEFAULT 0"
+                + ")";
+
+        try (Connection connection = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/swing_demo", "root", "");
+             PreparedStatement create = connection.prepareStatement(createTable)) {
+            create.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Failed to create users table.");
+            e.printStackTrace();
+        }
+
         String sql = "SELECT username, is_verified FROM users";
 
         try (

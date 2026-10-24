@@ -62,7 +62,6 @@ public class CandidateRegistry {
         ) {
             statement.executeUpdate();
         } catch (SQLException e) {
-            // Column might already exist - ignore
         }
 
         loadPendingFromDB();
@@ -145,7 +144,7 @@ public class CandidateRegistry {
     }
 
 
-    // Add a new candidacy application (linkedlist + db)
+    // Add a new candidacy application
     public static boolean addCandidate(
             Candidate candidate, String voterId
     ) {
@@ -251,7 +250,7 @@ public class CandidateRegistry {
     }
 
 
-    // Approve a candidate (linkedlist + db)
+    // Approve a candidate
     public static boolean approveCandidate(Candidate candidate) {
 
         // UPDATE STATUS IN candidacy_applications
@@ -309,7 +308,7 @@ public class CandidateRegistry {
     }
 
 
-    // Reject a candidate (linkedlist + db)
+    // Reject a candidate
     public static boolean rejectCandidate(Candidate candidate) {
 
         String sql =
