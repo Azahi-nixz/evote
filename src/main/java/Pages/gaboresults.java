@@ -124,125 +124,122 @@ public class gaboresults extends JFrame implements ActionListener {
         setVisible(true);
     }
 
-    private void loadResults() {
+    // private void loadResults() {
 
-        resultsPanel.removeAll();
+    //     resultsPanel.removeAll();
 
-        String sql = "SELECT c.name, c.party, COUNT(v.id) AS vote_count "
-                + "FROM candidates c LEFT JOIN votes v ON v.candidate_id = c.id "
-                + "GROUP BY c.id, c.name, c.party ORDER BY vote_count DESC";
+    //     String sql = "SELECT c.name, c.party, COUNT(v.id) AS vote_count "
+    //             + "FROM candidates c LEFT JOIN votes v ON v.candidate_id = c.id "
+    //             + "GROUP BY c.id, c.name, c.party ORDER BY vote_count DESC";
 
-        int totalVotes = 0;
-        int maxVotes = 0;
-        String winnerName = "";
-        String winnerParty = "";
-        List<Object[]> results = new ArrayList<>();
+    //     int totalVotes = 0;
+    //     int maxVotes = 0;
+    //     String winnerName = "";
+    //     String winnerParty = "";
+    //     List<Object[]> results = new ArrayList<>();
 
-        try (Connection con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-             PreparedStatement stmt = con.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+    //     try (Connection con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+    //          PreparedStatement stmt = con.prepareStatement(sql);
+    //          ResultSet rs = stmt.executeQuery()) {
 
-            while (rs.next()) {
-                String name = rs.getString("name");
-                String party = rs.getString("party");
-                int votes = rs.getInt("vote_count");
-                results.add(new Object[]{name, party, votes});
-                totalVotes += votes;
-                if (votes > maxVotes) {
-                    maxVotes = votes;
-                    winnerName = name;
-                    winnerParty = party;
-                }
-            }
+    //         while (rs.next()) {
+    //             String name = rs.getString("name");
+    //             String party = rs.getString("party");
+    //             int votes = rs.getInt("vote_count");
+    //             results.add(new Object[]{name, party, votes});
+    //             totalVotes += votes;
+    //             if (votes > maxVotes) {
+    //                 maxVotes = votes;
+    //                 winnerName = name;
+    //                 winnerParty = party;
+    //             }
+    //         }
 
-        } catch (SQLException e) {
-            JLabel err = new JLabel("Unable to load results. Check database connection.",
-                    SwingConstants.CENTER);
-            err.setFont(new Font("Arial", Font.PLAIN, 18));
-            err.setAlignmentX(Component.CENTER_ALIGNMENT);
-            resultsPanel.add(Box.createVerticalStrut(40));
-            resultsPanel.add(err);
-            e.printStackTrace();
-            resultsPanel.revalidate();
-            resultsPanel.repaint();
-            return;
-        }
+    //     } catch (SQLException e) {
+    //         JLabel err = new JLabel("Unable to load results. Check database connection.",
+    //                 SwingConstants.CENTER);
+    //         err.setFont(new Font("Arial", Font.PLAIN, 18));
+    //         err.setAlignmentX(Component.CENTER_ALIGNMENT);
+    //         resultsPanel.add(Box.createVerticalStrut(40));
+    //         resultsPanel.add(err);
+    //         e.printStackTrace();
+    //         resultsPanel.revalidate();
+    //         resultsPanel.repaint();
+    //         return;
+    //     }
 
-        totalVotesLabel.setText("Total Votes: " + totalVotes);
+    //     totalVotesLabel.setText("Total Votes: " + totalVotes);
 
-        if (totalVotes == 0) {
-            winnerLabel.setText("No votes have been cast yet.");
-            winnerLabel.setForeground(HOVER);
-        } else {
-            winnerLabel.setText("Winner: " + winnerName + " - " + winnerParty
-                    + " (" + maxVotes + " votes)");
-            winnerLabel.setForeground(SUCCESS);
-        }
+    //     if (totalVotes == 0) {
+    //         winnerLabel.setText("No votes have been cast yet.");
+    //         winnerLabel.setForeground(HOVER);
+    //     } else {
+    //         winnerLabel.setText("Winner: " + winnerName + " - " + winnerParty
+    //                 + " (" + maxVotes + " votes)");
+    //         winnerLabel.setForeground(SUCCESS);
+    //     }
 
-        if (results.isEmpty()) {
-            JLabel none = new JLabel("No candidates in the election.", SwingConstants.CENTER);
-            none.setFont(new Font("Arial", Font.PLAIN, 18));
-            none.setAlignmentX(Component.CENTER_ALIGNMENT);
-            resultsPanel.add(Box.createVerticalStrut(40));
-            resultsPanel.add(none);
-        } else {
-            for (Object[] row : results) {
-                String name = (String) row[0];
-                String party = (String) row[1];
-                int votes = (int) row[2];
-                double pct = totalVotes > 0 ? (double) votes / totalVotes * 100 : 0;
+    //     if (results.isEmpty()) {
+    //         JLabel none = new JLabel("No candidates in the election.", SwingConstants.CENTER);
+    //         none.setFont(new Font("Arial", Font.PLAIN, 18));
+    //         none.setAlignmentX(Component.CENTER_ALIGNMENT);
+    //         resultsPanel.add(Box.createVerticalStrut(40));
+    //         resultsPanel.add(none);
+    //     } else {
+    //         for (Object[] row : results) {
+    //             String name = (String) row[0];
+    //             String party = (String) row[1];
+    //             int votes = (int) row[2];
+    //             double pct = totalVotes > 0 ? (double) votes / totalVotes * 100 : 0;
 
-                JPanel card = new JPanel();
-                card.setLayout(null);
-                card.setBackground(ALT_FONTS);
-                card.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
-                card.setMaximumSize(new Dimension(610, 110));
-                card.setPreferredSize(new Dimension(610, 110));
-                card.setMinimumSize(new Dimension(610, 110));
+    //             JPanel card = new JPanel();
+    //             card.setLayout(null);
+    //             card.setBackground(ALT_FONTS);
+    //             card.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
+    //             card.setMaximumSize(new Dimension(610, 110));
+    //             card.setPreferredSize(new Dimension(610, 110));
+    //             card.setMinimumSize(new Dimension(610, 110));
 
-                JLabel lblName = new JLabel(name);
-                lblName.setFont(new Font("Arial", Font.BOLD, 19));
-                lblName.setBounds(15, 10, 350, 28);
-                card.add(lblName);
+    //             JLabel lblName = new JLabel(name);
+    //             lblName.setFont(new Font("Arial", Font.BOLD, 19));
+    //             lblName.setBounds(15, 10, 350, 28);
+    //             card.add(lblName);
 
-                JLabel lblParty = new JLabel("Party: " + party);
-                lblParty.setFont(new Font("Arial", Font.PLAIN, 14));
-                lblParty.setBounds(15, 38, 350, 22);
-                card.add(lblParty);
+    //             JLabel lblParty = new JLabel("Party: " + party);
+    //             lblParty.setFont(new Font("Arial", Font.PLAIN, 14));
+    //             lblParty.setBounds(15, 38, 350, 22);
+    //             card.add(lblParty);
 
-                JLabel lblVotes = new JLabel(votes + " votes", SwingConstants.RIGHT);
-                lblVotes.setFont(new Font("Arial", Font.BOLD, 16));
-                lblVotes.setBounds(440, 10, 150, 28);
-                card.add(lblVotes);
+    //             JLabel lblVotes = new JLabel(votes + " votes", SwingConstants.RIGHT);
+    //             lblVotes.setFont(new Font("Arial", Font.BOLD, 16));
+    //             lblVotes.setBounds(440, 10, 150, 28);
+    //             card.add(lblVotes);
 
-                JLabel lblPct = new JLabel(String.format("%.1f%%", pct), SwingConstants.RIGHT);
-                lblPct.setFont(new Font("Arial", Font.PLAIN, 14));
-                lblPct.setBounds(440, 38, 150, 22);
-                card.add(lblPct);
+    //             JLabel lblPct = new JLabel(String.format("%.1f%%", pct), SwingConstants.RIGHT);
+    //             lblPct.setFont(new Font("Arial", Font.PLAIN, 14));
+    //             lblPct.setBounds(440, 38, 150, 22);
+    //             card.add(lblPct);
 
-                JPanel barContainer = new JPanel();
-                barContainer.setLayout(null);
-                barContainer.setBackground(new Color(230, 230, 230));
-                barContainer.setBounds(15, 70, 575, 25);
-                card.add(barContainer);
+    //             JPanel barContainer = new JPanel();
+    //             barContainer.setLayout(null);
+    //             barContainer.setBackground(new Color(230, 230, 230));
+    //             barContainer.setBounds(15, 70, 575, 25);
+    //             card.add(barContainer);
 
-                int barWidth = totalVotes > 0 ? (int) ((double) votes / totalVotes * 575) : 0;
-                if (barWidth > 0) {
-                    JPanel barFill = new JPanel();
-                    barFill.setBackground(BAR_COLOR);
-                    barFill.setBounds(0, 0, barWidth, 25);
-                    barContainer.add(barFill);
-                }
+    //             int barWidth = totalVotes > 0 ? (int) ((double) votes / totalVotes * 575) : 0;
+    //             if (barWidth > 0) {
+    //                 JPanel barFill = new JPanel();
+    //                 barFill.setBackground(BAR_COLOR);
+    //                 barFill.setBounds(0, 0, barWidth, 25);
+    //                 barContainer.add(barFill);
+    //             }
 
-                card.setAlignmentX(Component.CENTER_ALIGNMENT);
-                resultsPanel.add(card);
-                resultsPanel.add(Box.createVerticalStrut(10));
-            }
-        }
-
-        resultsPanel.revalidate();
-        resultsPanel.repaint();
-    }
+    //             card.setAlignmentX(Component.CENTER_ALIGNMENT);
+    //             resultsPanel.add(card);
+    //             resultsPanel.add(Box.createVerticalStrut(10));
+    //         }
+    //     }
+    // }
 
     @Override
     public void actionPerformed(ActionEvent e) {
