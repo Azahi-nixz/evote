@@ -27,7 +27,7 @@ public class Vote extends JFrame implements ActionListener {
         setSize(1000, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setResizable(false);
+setResizable(false);
         getContentPane().setLayout(null);
 
         sideUI = new JPanel();
