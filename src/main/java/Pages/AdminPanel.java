@@ -373,7 +373,6 @@ separator.setBackground(Color.BLACK);
             if (rs3.next()) {
                 candidates = rs3.getInt("total");
             }
-            con3.close();
             candidateCountLabel.setText("Total Candidates: " + candidates);
 
         } catch (SQLException e) {
@@ -444,7 +443,6 @@ separator.setBackground(Color.BLACK);
                 PreparedStatement stmt = con.prepareStatement(
                         "UPDATE election_settings SET is_started = TRUE WHERE id = 1");
                 stmt.executeUpdate();
-                con.close();
                 refreshElectionStatus();
                 JOptionPane.showMessageDialog(this, "Election started. Voting is now open.",
                         "Election Started", JOptionPane.INFORMATION_MESSAGE);
@@ -459,7 +457,6 @@ separator.setBackground(Color.BLACK);
                 PreparedStatement stmt = con.prepareStatement(
                         "UPDATE election_settings SET is_started = FALSE WHERE id = 1");
                 stmt.executeUpdate();
-                con.close();
                 refreshElectionStatus();
                 JOptionPane.showMessageDialog(this, "Election stopped. Voting is now closed.",
                         "Election Stopped", JOptionPane.INFORMATION_MESSAGE);
