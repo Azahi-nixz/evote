@@ -11,8 +11,8 @@ public class UserRegistry {
             new HashMap<>();
 
     // Voter map
-    public static final Map<String, Voter> voters =
-            new HashMap<>();
+   // public static final Map<String, Voter> voters =
+      //      new HashMap<>();
 
     // Current logged-in user
     public static String currentUser = null;
@@ -26,12 +26,12 @@ public class UserRegistry {
 
         String createTable =
                 "CREATE TABLE IF NOT EXISTS users ("
-                + "id INT AUTO_INCREMENT PRIMARY KEY, "
-                + "username VARCHAR(255) NOT NULL UNIQUE, "
-                + "password VARCHAR(255) NOT NULL, "
-                + "region VARCHAR(255), "
-                + "is_verified TINYINT(1) DEFAULT 0"
-                + ")";
+                        + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                        + "username VARCHAR(255) NOT NULL UNIQUE, "
+                        + "password VARCHAR(255) NOT NULL, "
+                        + "region VARCHAR(255), "
+                        + "is_verified TINYINT(1) DEFAULT 0"
+                        + ")";
 
         try (Connection connection = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/swing_demo", "root", "");
@@ -128,22 +128,24 @@ public class UserRegistry {
         }
     }
 
-    // Register a voter
-    public static void registerVoter(Voter voter) {
-        synchronized (voters) {
-            voters.put(voter.getVoterId(), voter);
-        }
-    }
-
-    // Get a voter by username
-    public static Voter getVoter(String username) {
-        synchronized (voters) {
-            return voters.get(username);
-        }
-    }
-
-    // Set current logged-in user
-    public static void setCurrentUser(String username) {
-        currentUser = username;
-    }
 }
+//
+//    // Register a voter
+//    public static void registerVoter(Voter voter) {
+//        synchronized (voters) {
+//            voters.put(voter.getVoterId(), voter);
+//        }
+//    }
+//
+//    // Get a voter by username
+//    public static Voter getVoter(String username) {
+//        synchronized (voters) {
+//            return voters.get(username);
+//        }
+//    }
+//
+//    // Set current logged-in user
+//    public static void setCurrentUser(String username) {
+//        currentUser = username;
+//    }
+//}

@@ -7,18 +7,6 @@ import java.sql.*;
 
 public class signup extends JFrame implements ActionListener {
 
-    private final Color ALT_FONTS = new Color(255, 255, 255);
-    private final Color BRAND = new Color(0, 0, 0);
-    private final Color HOVER = new Color(105, 105, 105);
-    private final Color ERROR = new Color(220, 0, 0);
-
-    private String[] points = {
-            "Leading E-Voting System in the country",
-            "Easy to use",
-            "Secure and trustworthy",
-            "Fast performance"
-    };
-
     private String[] regions = {
             "Select your region",
             "National Capital Region (NCR)",
@@ -42,364 +30,228 @@ public class signup extends JFrame implements ActionListener {
     };
 
     private JPanel sidePane;
-    private JSeparator separator;
+private JSeparator separator;
     private JLabel brandTitle, brandSubtitle;
+    private JLabel point1, point2, point3, point4;
     private JLabel title, subtitle;
     private JLabel usernameLabel, passwordLabel, confirmPasswordLabel, regionLabel;
-    private JLabel usernameError, passwordError, confirmPasswordError, regionError;
     private JLabel loginNav;
     private JTextField username;
     private JPasswordField password, confirmPassword;
     private JComboBox<String> region;
-    private JButton signup, passwordEye, confirmPasswordEye;
-
-    private void createSideUI() {
-
-        sidePane = new JPanel();
-        sidePane.setBackground(BRAND);
-        sidePane.setBounds(0, 0, 300, 600);
-        sidePane.setLayout(null);
-
-        brandTitle = new JLabel("E-VOTE", JLabel.CENTER);
-        brandTitle.setFont(new Font("Arial", Font.BOLD, 42));
-        brandTitle.setForeground(ALT_FONTS);
-        brandTitle.setBounds(0, 70, 300, 50);
-        sidePane.add(brandTitle);
-
-        brandSubtitle = new JLabel("Fast. Secure. Efficient", JLabel.CENTER);
-        brandSubtitle.setFont(new Font("Arial", Font.ITALIC, 14));
-        brandSubtitle.setForeground(ALT_FONTS);
-        brandSubtitle.setBounds(0, 110, 300, 50);
-        sidePane.add(brandSubtitle);
-
-        separator = new JSeparator(JSeparator.HORIZONTAL);
-        separator.setForeground(ALT_FONTS);
-        separator.setBounds(50, 160, 200, 10);
-        sidePane.add(separator);
-
-        for (int i = 0; i < points.length; i++) {
-            JLabel l = new JLabel("-" + points[i], SwingConstants.CENTER);
-            l.setFont(new Font("Arial", Font.BOLD, 14));
-            l.setForeground(ALT_FONTS);
-            l.setBounds(0, 180 + (i * 30), 300, 50);
-            sidePane.add(l);
-        }
-    }
-
-    private void resetBorder(JTextField field) {
-        field.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(BRAND, 1),
-                BorderFactory.createEmptyBorder(8, 10, 8, 10)));
-    }
-
-    private void errorBorder(JTextField field) {
-        field.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(ERROR, 2),
-                BorderFactory.createEmptyBorder(7, 9, 7, 9)));
-    }
+    private JButton signup;
 
     public signup() {
 
         setTitle("E-Vote");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1000, 600);
-        setResizable(false);
-        setBackground(ALT_FONTS);
+setResizable(false);
         setLayout(null);
 
-        createSideUI();
+        sidePane = new JPanel();
+sidePane.setBackground(Color.BLACK);
+        sidePane.setBounds(0, 0, 300, 600);
+        sidePane.setLayout(null);
+
+        brandTitle = new JLabel("E-VOTE", JLabel.CENTER);
+        brandTitle.setFont(new Font("Arial", Font.BOLD, 42));
+brandTitle.setForeground(Color.WHITE);
+        brandTitle.setBounds(0, 70, 300, 50);
+        sidePane.add(brandTitle);
+
+        brandSubtitle = new JLabel("Fast. Secure. Efficient", JLabel.CENTER);
+        brandSubtitle.setFont(new Font("Arial", Font.ITALIC, 14));
+brandSubtitle.setForeground(Color.WHITE);
+        brandSubtitle.setBounds(0, 110, 300, 50);
+        sidePane.add(brandSubtitle);
+
+separator = new JSeparator(JSeparator.HORIZONTAL);
+separator.setForeground(Color.WHITE);
+        separator.setBounds(50, 160, 200, 10);
+        sidePane.add(separator);
+
+        point1 = new JLabel("-Leading E-Voting System in the country", SwingConstants.CENTER);
+        point1.setFont(new Font("Arial", Font.BOLD, 14));
+point1.setForeground(Color.WHITE);
+        point1.setBounds(0, 180, 300, 50);
+        sidePane.add(point1);
+
+        point2 = new JLabel("-Easy to use", SwingConstants.CENTER);
+        point2.setFont(new Font("Arial", Font.BOLD, 14));
+point2.setForeground(Color.WHITE);
+        point2.setBounds(0, 210, 300, 50);
+        sidePane.add(point2);
+
+        point3 = new JLabel("-Secure and trustworthy", SwingConstants.CENTER);
+        point3.setFont(new Font("Arial", Font.BOLD, 14));
+point3.setForeground(Color.WHITE);
+        point3.setBounds(0, 240, 300, 50);
+        sidePane.add(point3);
+
+        point4 = new JLabel("-Fast performance", SwingConstants.CENTER);
+        point4.setFont(new Font("Arial", Font.BOLD, 14));
+point4.setForeground(Color.WHITE);
+        point4.setBounds(0, 270, 300, 50);
+        sidePane.add(point4);
+
         add(sidePane);
 
         title = new JLabel("Create Account");
         title.setFont(new Font("Arial", Font.BOLD, 30));
-        title.setForeground(BRAND);
         title.setBounds(350, 30, 300, 50);
         add(title);
 
-        subtitle = new JLabel("Register your account to participate in elections.", JLabel.LEFT);
+        subtitle = new JLabel("Register your account to participate in elections.");
         subtitle.setFont(new Font("Arial", Font.PLAIN, 15));
-        subtitle.setForeground(HOVER);
-        subtitle.setBounds(350, 70, 600, 40);
+        subtitle.setBounds(350, 70, 600, 30);
         add(subtitle);
 
         usernameLabel = new JLabel("Username");
         usernameLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-        usernameLabel.setForeground(BRAND);
-        usernameLabel.setBounds(350, 115, 100, 30);
+        usernameLabel.setBounds(350, 110, 100, 30);
         add(usernameLabel);
 
         username = new JTextField();
         username.setFont(new Font("Arial", Font.PLAIN, 14));
-        username.setForeground(BRAND);
-        username.setBounds(350, 145, 450, 40);
-        username.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(BRAND, 1),
-                BorderFactory.createEmptyBorder(8, 10, 8, 10)));
-        username.addFocusListener(new FocusAdapter() {
-            public void focusGained(FocusEvent e) {
-                if (!usernameError.isVisible()) resetBorder(username);
-            }
-            public void focusLost(FocusEvent e) {
-                if (!usernameError.isVisible()) resetBorder(username);
-            }
-        });
+        username.setBounds(350, 140, 450, 40);
         add(username);
-
-        usernameError = new JLabel("");
-        usernameError.setFont(new Font("Arial", Font.PLAIN, 11));
-        usernameError.setForeground(ERROR);
-        usernameError.setBounds(350, 185, 450, 20);
-        usernameError.setVisible(false);
-        add(usernameError);
 
         passwordLabel = new JLabel("Password");
         passwordLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-        passwordLabel.setForeground(BRAND);
-        passwordLabel.setBounds(350, 205, 100, 30);
+        passwordLabel.setBounds(350, 195, 100, 30);
         add(passwordLabel);
 
         password = new JPasswordField();
         password.setFont(new Font("Arial", Font.PLAIN, 14));
-        password.setForeground(BRAND);
-        password.setBounds(350, 235, 410, 40);
-        password.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(BRAND, 1),
-                BorderFactory.createEmptyBorder(8, 10, 8, 10)));
-        password.addFocusListener(new FocusAdapter() {
-            public void focusGained(FocusEvent e) {
-                if (!passwordError.isVisible()) resetBorder(password);
-            }
-            public void focusLost(FocusEvent e) {
-                if (!passwordError.isVisible()) resetBorder(password);
-            }
-        });
+        password.setBounds(350, 225, 450, 40);
         add(password);
-
-        passwordEye = new JButton("H");
-        passwordEye.setFont(new Font("Arial", Font.PLAIN, 9));
-        passwordEye.setBackground(BRAND);
-        passwordEye.setForeground(ALT_FONTS);
-        passwordEye.setBorderPainted(false);
-        passwordEye.setFocusPainted(false);
-        passwordEye.setBounds(760, 235, 40, 40);
-        passwordEye.addActionListener(e -> {
-            if (password.getEchoChar() == (char) 0) {
-                password.setEchoChar('•');
-                passwordEye.setText("S");
-            } else {
-                password.setEchoChar((char) 0);
-                passwordEye.setText("H");
-            }
-        });
-        add(passwordEye);
-
-        passwordError = new JLabel("");
-        passwordError.setFont(new Font("Arial", Font.PLAIN, 11));
-        passwordError.setForeground(ERROR);
-        passwordError.setBounds(350, 275, 450, 20);
-        passwordError.setVisible(false);
-        add(passwordError);
 
         confirmPasswordLabel = new JLabel("Confirm Password");
         confirmPasswordLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-        confirmPasswordLabel.setForeground(BRAND);
-        confirmPasswordLabel.setBounds(350, 295, 150, 30);
+        confirmPasswordLabel.setBounds(350, 280, 150, 30);
         add(confirmPasswordLabel);
 
         confirmPassword = new JPasswordField();
         confirmPassword.setFont(new Font("Arial", Font.PLAIN, 14));
-        confirmPassword.setForeground(BRAND);
-        confirmPassword.setBounds(350, 325, 410, 40);
-        confirmPassword.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(BRAND, 1),
-                BorderFactory.createEmptyBorder(8, 10, 8, 10)));
-        confirmPassword.addFocusListener(new FocusAdapter() {
-            public void focusGained(FocusEvent e) {
-                if (!confirmPasswordError.isVisible()) resetBorder(confirmPassword);
-            }
-            public void focusLost(FocusEvent e) {
-                if (!confirmPasswordError.isVisible()) resetBorder(confirmPassword);
-            }
-        });
+        confirmPassword.setBounds(350, 310, 450, 40);
         add(confirmPassword);
-
-        confirmPasswordEye = new JButton("H");
-        confirmPasswordEye.setFont(new Font("Arial", Font.PLAIN, 9));
-        confirmPasswordEye.setBackground(BRAND);
-        confirmPasswordEye.setForeground(ALT_FONTS);
-        confirmPasswordEye.setBorderPainted(false);
-        confirmPasswordEye.setFocusPainted(false);
-        confirmPasswordEye.setBounds(760, 325, 40, 40);
-        confirmPasswordEye.addActionListener(e -> {
-            if (confirmPassword.getEchoChar() == (char) 0) {
-                confirmPassword.setEchoChar('•');
-                confirmPasswordEye.setText("S");
-            } else {
-                confirmPassword.setEchoChar((char) 0);
-                confirmPasswordEye.setText("H");
-            }
-        });
-        add(confirmPasswordEye);
-
-        confirmPasswordError = new JLabel("");
-        confirmPasswordError.setFont(new Font("Arial", Font.PLAIN, 11));
-        confirmPasswordError.setForeground(ERROR);
-        confirmPasswordError.setBounds(350, 365, 450, 20);
-        confirmPasswordError.setVisible(false);
-        add(confirmPasswordError);
 
         regionLabel = new JLabel("Region");
         regionLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-        regionLabel.setForeground(BRAND);
-        regionLabel.setBounds(350, 385, 100, 30);
+        regionLabel.setBounds(350, 365, 100, 30);
         add(regionLabel);
 
         region = new JComboBox<>(regions);
         region.setFont(new Font("Arial", Font.PLAIN, 14));
-        region.setBounds(350, 415, 450, 40);
-        region.setBackground(ALT_FONTS);
-        region.setForeground(BRAND);
+        region.setBounds(350, 395, 450, 40);
         add(region);
-
-        regionError = new JLabel("");
-        regionError.setFont(new Font("Arial", Font.PLAIN, 11));
-        regionError.setForeground(ERROR);
-        regionError.setBounds(350, 455, 450, 20);
-        regionError.setVisible(false);
-        add(regionError);
 
         signup = new JButton("Create Account");
         signup.setFont(new Font("Arial", Font.BOLD, 14));
-        signup.setBackground(BRAND);
-        signup.setForeground(ALT_FONTS);
-        signup.setBorderPainted(false);
-        signup.setFocusPainted(false);
-        signup.setBounds(350, 470, 450, 45);
-        signup.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) { signup.setBackground(HOVER); }
-            public void mouseExited(MouseEvent e) { signup.setBackground(BRAND); }
-        });
+        signup.setBounds(350, 455, 450, 45);
         add(signup);
 
         loginNav = new JLabel("Already have an account? Click here to login");
         loginNav.setFont(new Font("Arial", Font.PLAIN, 10));
-        loginNav.setForeground(HOVER);
-        loginNav.setBounds(350, 520, 450, 30);
-        loginNav.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        loginNav.setBounds(350, 510, 450, 30);
+loginNav.setCursor(new Cursor(Cursor.HAND_CURSOR));
         loginNav.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) { loginNav.setForeground(Color.BLUE); }
-            public void mouseExited(MouseEvent e) { loginNav.setForeground(HOVER); }
             public void mouseClicked(MouseEvent e) { new LogIn(); dispose(); }
         });
         add(loginNav);
 
-        // Button listeners
+        //Add to ActionListener
         signup.addActionListener(this);
 
-        setLocationRelativeTo(null);
+setLocationRelativeTo(null);
         setVisible(true);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        if (e.getSource() != signup) return;
+        if (e.getSource() == signup) {
 
-        usernameError.setVisible(false);
-        passwordError.setVisible(false);
-        confirmPasswordError.setVisible(false);
-        regionError.setVisible(false);
+            String usernameValue = username.getText().trim();
+            String passwordValue = String.valueOf(password.getPassword());
+            String confirmPasswordValue = String.valueOf(confirmPassword.getPassword());
+            String regionValue = (String) region.getSelectedItem();
 
-        resetBorder(username);
-        resetBorder(password);
-        resetBorder(confirmPassword);
-
-        if (username.getText().isEmpty()) {
-            usernameError.setText("Username is required.");
-            usernameError.setVisible(true);
-            errorBorder(username);
-        } else if (username.getText().length() < 6) {
-            usernameError.setText("Username should be at least 6 characters.");
-            usernameError.setVisible(true);
-            errorBorder(username);
-        }
-
-        if (password.getPassword().length == 0) {
-            passwordError.setText("Password is required.");
-            passwordError.setVisible(true);
-            errorBorder(password);
-        } else if (password.getPassword().length < 6) {
-            passwordError.setText("Password should be at least 6 characters.");
-            passwordError.setVisible(true);
-            errorBorder(password);
-        }
-
-        if (confirmPassword.getPassword().length == 0) {
-            confirmPasswordError.setText("Please confirm your password.");
-            confirmPasswordError.setVisible(true);
-            errorBorder(confirmPassword);
-        } else if (!String.valueOf(password.getPassword()).equals(String.valueOf(confirmPassword.getPassword()))) {
-            confirmPasswordError.setText("Passwords do not match.");
-            confirmPasswordError.setVisible(true);
-            errorBorder(confirmPassword);
-        }
-
-        if (region.getSelectedIndex() == 0) {
-            regionError.setText("Please select your region.");
-            regionError.setVisible(true);
-        }
-
-        if (usernameError.isVisible() || passwordError.isVisible()
-                || confirmPasswordError.isVisible() || regionError.isVisible()) return;
-
-        String usernameValue = username.getText().trim();
-        String passwordValue = String.valueOf(password.getPassword());
-        String regionValue = (String) region.getSelectedItem();
-
-        try {
-            if (UserRegistry.userExists(usernameValue)) {
-                usernameError.setText("Username already exists.");
-                usernameError.setVisible(true);
-                errorBorder(username);
+            if (usernameValue.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Username is required.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            Connection connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/swing_demo", "root", "");
-
-            PreparedStatement check = connection.prepareStatement(
-                    "SELECT username FROM users WHERE username = ?");
-            check.setString(1, usernameValue);
-            ResultSet result = check.executeQuery();
-
-            if (result.next()) {
-                usernameError.setText("Username already exists.");
-                usernameError.setVisible(true);
-                errorBorder(username);
-                UserRegistry.addUser(usernameValue, false);
-            } else {
-                PreparedStatement info = connection.prepareStatement(
-                        "INSERT INTO users (username, password, region) VALUES (?, ?, ?)");
-                info.setString(1, usernameValue);
-                info.setString(2, passwordValue);
-                info.setString(3, regionValue);
-                int rows = info.executeUpdate();
-
-                if (rows > 0) {
-                    UserRegistry.addUser(usernameValue, false);
-                    dispose();
-                    new LogIn();
-                }
+            if (usernameValue.length() < 6) {
+                JOptionPane.showMessageDialog(this, "Username should be at least 6 characters.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
             }
 
-            connection.close();
+            if (passwordValue.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Password is required.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-        } catch (SQLException sql) {
-            usernameError.setText("Internal server error. Please try again later.");
-            usernameError.setVisible(true);
-            passwordError.setText("Internal server error. Please try again later.");
-            passwordError.setVisible(true);
-            sql.printStackTrace();
+            if (passwordValue.length() < 6) {
+                JOptionPane.showMessageDialog(this, "Password should be at least 6 characters.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (confirmPasswordValue.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please confirm your password.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (!passwordValue.equals(confirmPasswordValue)) {
+                JOptionPane.showMessageDialog(this, "Passwords do not match.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (region.getSelectedIndex() == 0) {
+                JOptionPane.showMessageDialog(this, "Please select your region.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try {
+                if (UserRegistry.userExists(usernameValue)) {
+                    JOptionPane.showMessageDialog(this, "Username already exists.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                Connection connection = DriverManager.getConnection(
+                        "jdbc:mysql://localhost:3306/swing_demo", "root", "");
+
+                PreparedStatement check = connection.prepareStatement(
+                        "SELECT username FROM users WHERE username = ?");
+                check.setString(1, usernameValue);
+                ResultSet result = check.executeQuery();
+
+                if (result.next()) {
+                    JOptionPane.showMessageDialog(this, "Username already exists.", "Error", JOptionPane.ERROR_MESSAGE);
+                    UserRegistry.addUser(usernameValue, false);
+                } else {
+                    PreparedStatement info = connection.prepareStatement(
+                            "INSERT INTO users (username, password, region) VALUES (?, ?, ?)");
+                    info.setString(1, usernameValue);
+                    info.setString(2, passwordValue);
+                    info.setString(3, regionValue);
+                    int rows = info.executeUpdate();
+
+                    if (rows > 0) {
+                        UserRegistry.addUser(usernameValue, false);
+                        JOptionPane.showMessageDialog(this, "Account created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                        dispose();
+                        new LogIn();
+                    }
+                }
+
+                connection.close();
+
+            } catch (SQLException sql) {
+                JOptionPane.showMessageDialog(this, "Internal server error. Please try again later.", "Error", JOptionPane.ERROR_MESSAGE);
+                sql.printStackTrace();
+            }
         }
     }
 }
