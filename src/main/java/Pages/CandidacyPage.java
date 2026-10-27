@@ -160,10 +160,10 @@ public class CandidacyPage extends JFrame implements ActionListener {
                 return;
             }
 
-            if (CandidateRegistry.candidateExists(name)) {
-                JOptionPane.showMessageDialog(this, "A candidacy with this name already exists.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+//            if (CandidateRegistry.candidateExists(name)) {
+//                JOptionPane.showMessageDialog(this, "A candidacy with this name already exists.", "Error", JOptionPane.ERROR_MESSAGE);
+//                return;
+//            }
 
             Candidate candidate = new Candidate("CAND-" + System.currentTimeMillis(), name, party);
 

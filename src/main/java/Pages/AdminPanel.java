@@ -285,7 +285,6 @@ separator.setBackground(Color.BLACK);
         electionPanel.setVisible(false);
         if (panelName.equals("Dashboard")) {
             dashboardPanel.setVisible(true);
-            refreshDashboard();
         } else if (panelName.equals("Candidates")) {
             candidatePanel.setVisible(true);
             refreshCandidateList();
@@ -295,31 +294,31 @@ separator.setBackground(Color.BLACK);
         }
     }
 
-    private void refreshDashboard() {
-        CandidateRegistry.loadPendingFromDB();
-        pendingCardValue.setText(String.valueOf(CandidateRegistry.getPendingCount()));
-        CandidateRegistry.loadApprovedFromDB();
-        approvedCardValue.setText(String.valueOf(CandidateRegistry.getApprovedCount()));
-        try {
-            Connection con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-            PreparedStatement stmt = con.prepareStatement(
-                    "SELECT is_started FROM election_settings WHERE id = 1");
-            ResultSet rs = stmt.executeQuery();
-            boolean started = false;
-            if (rs.next()) {
-                started = rs.getBoolean("is_started");
-            }
-            con.close();
-            if (started) {
-                electionCardValue.setText("OPEN");
-            } else {
-                electionCardValue.setText("CLOSE");
-            }
-        } catch (SQLException e) {
-            electionCardValue.setText("ERROR");
-            e.printStackTrace();
-        }
-    }
+//    private void refreshDashboard() {
+//        CandidateRegistry.loadPendingFromDB();
+//        pendingCardValue.setText(String.valueOf(CandidateRegistry.getPendingCount()));
+//        CandidateRegistry.loadApprovedFromDB();
+//        approvedCardValue.setText(String.valueOf(CandidateRegistry.getApprovedCount()));
+//        try {
+//            Connection con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+//            PreparedStatement stmt = con.prepareStatement(
+//                    "SELECT is_started FROM election_settings WHERE id = 1");
+//            ResultSet rs = stmt.executeQuery();
+//            boolean started = false;
+//            if (rs.next()) {
+//                started = rs.getBoolean("is_started");
+//            }
+//            con.close();
+//            if (started) {
+//                electionCardValue.setText("OPEN");
+//            } else {
+//                electionCardValue.setText("CLOSE");
+//            }
+//        } catch (SQLException e) {
+//            electionCardValue.setText("ERROR");
+//            e.printStackTrace();
+//        }
+//    }
 
     private void refreshCandidateList() {
         CandidateRegistry.loadPendingFromDB();
@@ -471,7 +470,7 @@ separator.setBackground(Color.BLACK);
             }
         } else if (e.getSource() == viewResultsBtn) {
             dispose();
-            new gaboresults();
+           // new gaboresults();
         }
     }
 }

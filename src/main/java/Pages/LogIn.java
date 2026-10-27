@@ -168,8 +168,6 @@ public class LogIn extends JFrame implements ActionListener {
                     JOptionPane.showMessageDialog(this, "Wrong username or password.", "Login Failed", JOptionPane.ERROR_MESSAGE);
                 }
 
-                connection.close();
-
             } catch (SQLException sql) {
                 JOptionPane.showMessageDialog(this, "Internal server error. Please try again later.", "Error", JOptionPane.ERROR_MESSAGE);
                 sql.printStackTrace();

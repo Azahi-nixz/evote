@@ -23,33 +23,33 @@ public class CandidateRegistry {
     public static void initialize() {
 
         String[] tables = {
-            "CREATE TABLE IF NOT EXISTS candidates ("
-                + "id INT AUTO_INCREMENT PRIMARY KEY, "
-                + "name VARCHAR(255) NOT NULL, "
-                + "party VARCHAR(255), "
-                + "position VARCHAR(255)"
-                + ")",
+                "CREATE TABLE IF NOT EXISTS candidates ("
+                        + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                        + "name VARCHAR(255) NOT NULL, "
+                        + "party VARCHAR(255), "
+                        + "position VARCHAR(255)"
+                        + ")",
 
-            "CREATE TABLE IF NOT EXISTS election_settings ("
-                + "id INT AUTO_INCREMENT PRIMARY KEY, "
-                + "is_started TINYINT(1) DEFAULT 0"
-                + ")",
+                "CREATE TABLE IF NOT EXISTS election_settings ("
+                        + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                        + "is_started TINYINT(1) DEFAULT 0"
+                        + ")",
 
-            "CREATE TABLE IF NOT EXISTS votes ("
-                + "id INT AUTO_INCREMENT PRIMARY KEY, "
-                + "username VARCHAR(255) NOT NULL, "
-                + "candidate_id INT NOT NULL, "
-                + "UNIQUE KEY unique_vote (username)"
-                + ")",
+                "CREATE TABLE IF NOT EXISTS votes ("
+                        + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                        + "username VARCHAR(255) NOT NULL, "
+                        + "candidate_id INT NOT NULL, "
+                        + "UNIQUE KEY unique_vote (username)"
+                        + ")",
 
-            "CREATE TABLE IF NOT EXISTS candidacy_applications ("
-                + "id INT AUTO_INCREMENT PRIMARY KEY, "
-                + "candidate_id VARCHAR(255), "
-                + "name VARCHAR(255), "
-                + "party VARCHAR(255), "
-                + "status VARCHAR(20) DEFAULT 'pending', "
-                + "voter_id VARCHAR(255)"
-                + ")"
+                "CREATE TABLE IF NOT EXISTS candidacy_applications ("
+                        + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                        + "candidate_id VARCHAR(255), "
+                        + "name VARCHAR(255), "
+                        + "party VARCHAR(255), "
+                        + "status VARCHAR(20) DEFAULT 'pending', "
+                        + "voter_id VARCHAR(255)"
+                        + ")"
         };
 
         try (Connection connection = DriverManager.getConnection(
@@ -67,7 +67,7 @@ public class CandidateRegistry {
                  ResultSet rs = check.executeQuery()) {
                 if (rs.next() && rs.getInt(1) == 0) {
                     connection.prepareStatement(
-                            "INSERT INTO election_settings (is_started) VALUES (0)")
+                                    "INSERT INTO election_settings (is_started) VALUES (0)")
                             .executeUpdate();
                 }
             }
@@ -313,9 +313,7 @@ public class CandidateRegistry {
             pendingCandidates.remove(candidate);
         }
         candidate.setApproved(true);
-        synchronized (approvedCandidates) {
-            approvedCandidates.add(candidate);
-        }
+        approvedCandidates.add(candidate);
 
         return true;
     }
@@ -343,94 +341,94 @@ public class CandidateRegistry {
             return false;
         }
 
-        synchronized (pendingCandidates) {
-            pendingCandidates.remove(candidate);
-        }
+
+        pendingCandidates.remove(candidate);
+
 
         return true;
     }
-
-
-    // Check if a candidate already exists by name
-    public static boolean candidateExists(String name) {
-
-        // Check pending in db
-        String pendingSql =
-                "SELECT 1 FROM candidacy_applications "
-                        + "WHERE name = ? AND status = 'pending' "
-                        + "LIMIT 1";
-
-        try (
-                Connection connection = DriverManager.getConnection(
-                        DB_URL, DB_USER, DB_PASSWORD
-                );
-                PreparedStatement statement =
-                        connection.prepareStatement(pendingSql)
-        ) {
-            statement.setString(1, name);
-
-            try (ResultSet result = statement.executeQuery()) {
-                if (result.next()) {
-                    return true;
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        // Check approved in db
-        String approvedSql =
-                "SELECT 1 FROM candidates WHERE name = ? LIMIT 1";
-
-        try (
-                Connection connection = DriverManager.getConnection(
-                        DB_URL, DB_USER, DB_PASSWORD
-                );
-                PreparedStatement statement =
-                        connection.prepareStatement(approvedSql)
-        ) {
-            statement.setString(1, name);
-
-            try (ResultSet result = statement.executeQuery()) {
-                if (result.next()) {
-                    return true;
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        // Check in-memory as fallback
-        synchronized (pendingCandidates) {
-            for (Candidate c : pendingCandidates) {
-                if (c.getName().equalsIgnoreCase(name)) {
-                    return true;
-                }
-            }
-        }
-        synchronized (approvedCandidates) {
-            for (Candidate c : approvedCandidates) {
-                if (c.getName().equalsIgnoreCase(name)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-
-    // Get pending count
-    public static int getPendingCount() {
-        synchronized (pendingCandidates) {
-            return pendingCandidates.size();
-        }
-    }
-
-    // Get approved count
-    public static int getApprovedCount() {
-        synchronized (approvedCandidates) {
-            return approvedCandidates.size();
-        }
-    }
 }
+
+//    // Check if a candidate already exists by name
+//    public static boolean candidateExists(String name) {
+//
+//        // Check pending in db
+//        String pendingSql =
+//                "SELECT 1 FROM candidacy_applications "
+//                        + "WHERE name = ? AND status = 'pending' "
+//                        + "LIMIT 1";
+//
+//        try (
+//                Connection connection = DriverManager.getConnection(
+//                        DB_URL, DB_USER, DB_PASSWORD
+//                );
+//                PreparedStatement statement =
+//                        connection.prepareStatement(pendingSql)
+//        ) {
+//            statement.setString(1, name);
+//
+//            try (ResultSet result = statement.executeQuery()) {
+//                if (result.next()) {
+//                    return true;
+//                }
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        // Check approved in db
+//        String approvedSql =
+//                "SELECT 1 FROM candidates WHERE name = ? LIMIT 1";
+//
+//        try (
+//                Connection connection = DriverManager.getConnection(
+//                        DB_URL, DB_USER, DB_PASSWORD
+//                );
+//                PreparedStatement statement =
+//                        connection.prepareStatement(approvedSql)
+//        ) {
+//            statement.setString(1, name);
+//
+//            try (ResultSet result = statement.executeQuery()) {
+//                if (result.next()) {
+//                    return true;
+//                }
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//        synchronized (pendingCandidates) {
+//            for (Candidate c : pendingCandidates) {
+//                if (c.getName().equalsIgnoreCase(name)) {
+//                    return true;
+//                }
+//            }
+//        }
+//        synchronized (approvedCandidates) {
+//            for (Candidate c : approvedCandidates) {
+//                if (c.getName().equalsIgnoreCase(name)) {
+//                    return true;
+//                }
+//            }
+//        }
+//
+//        return false;
+//    }
+//
+//
+//    // Get pending count
+//    public static int getPendingCount() {
+//        synchronized (pendingCandidates) {
+//            return pendingCandidates.size();
+//        }
+//    }
+//
+//    // Get approved count
+//    public static int getApprovedCount() {
+//        synchronized (approvedCandidates) {
+//            return approvedCandidates.size();
+//        }
+//    }
+//}
