@@ -3,6 +3,9 @@ package Pages;
 import java.sql.*;
 import java.util.LinkedList;
 
+
+
+
 public class CandidateRegistry {
 
     // Linked list to store pending and approved candidates
@@ -17,17 +20,41 @@ public class CandidateRegistry {
             "jdbc:mysql://localhost:3306/swing_demo";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "";
+    private static final String SERVER_URL =
+            "jdbc:mysql://localhost:3306/";
 
+    public static void initializeDatabase() {
+
+        // Create database first
+        try (Connection connection = DriverManager.getConnection(
+                SERVER_URL, DB_USER, DB_PASSWORD
+        );
+             PreparedStatement statement = connection.prepareStatement(
+                     "CREATE DATABASE IF NOT EXISTS swing_demo"
+             )) {
+
+            statement.executeUpdate();
+
+            System.out.println("Database initialized successfully!");
+
+        } catch (SQLException e) {
+
+            System.out.println("Failed to create database.");
+            e.printStackTrace();
+            return;
+        }
+    }
 
     // Create tables and load pending
     public static void initialize() {
 
         String[] tables = {
+
                 "CREATE TABLE IF NOT EXISTS candidates ("
                         + "id INT AUTO_INCREMENT PRIMARY KEY, "
-                        + "name VARCHAR(255) NOT NULL, "
-                        + "party VARCHAR(255), "
-                        + "position VARCHAR(255)"
+                        + "name VARCHAR(50) NOT NULL, "
+                        + "party VARCHAR(50), "
+                        + "position VARCHAR(50)"
                         + ")",
 
                 "CREATE TABLE IF NOT EXISTS election_settings ("
@@ -37,18 +64,18 @@ public class CandidateRegistry {
 
                 "CREATE TABLE IF NOT EXISTS votes ("
                         + "id INT AUTO_INCREMENT PRIMARY KEY, "
-                        + "username VARCHAR(255) NOT NULL, "
+                        + "username VARCHAR(50) NOT NULL, "
                         + "candidate_id INT NOT NULL, "
                         + "UNIQUE KEY unique_vote (username)"
                         + ")",
 
                 "CREATE TABLE IF NOT EXISTS candidacy_applications ("
                         + "id INT AUTO_INCREMENT PRIMARY KEY, "
-                        + "candidate_id VARCHAR(255), "
-                        + "name VARCHAR(255), "
-                        + "party VARCHAR(255), "
+                        + "candidate_id VARCHAR(50), "
+                        + "name VARCHAR(50), "
+                        + "party VARCHAR(50), "
                         + "status VARCHAR(20) DEFAULT 'pending', "
-                        + "voter_id VARCHAR(255)"
+                        + "voter_id VARCHAR(50)"
                         + ")"
         };
 

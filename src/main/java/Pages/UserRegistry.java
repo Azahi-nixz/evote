@@ -27,9 +27,9 @@ public class UserRegistry {
         String createTable =
                 "CREATE TABLE IF NOT EXISTS users ("
                 + "id INT AUTO_INCREMENT PRIMARY KEY, "
-                + "username VARCHAR(255) NOT NULL UNIQUE, "
-                + "password VARCHAR(255) NOT NULL, "
-                + "region VARCHAR(255), "
+                + "username VARCHAR(100) NOT NULL UNIQUE, "
+                + "password VARCHAR(100) NOT NULL, "
+                + "region VARCHAR(100), "
                 + "is_verified TINYINT(1) DEFAULT 0"
                 + ")";
 
