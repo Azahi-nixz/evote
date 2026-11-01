@@ -183,32 +183,32 @@ setLocationRelativeTo(null);
                 return;
             }
 
-            if (usernameValue.length() < 6) {
+            else if (usernameValue.length() < 6) {
                 JOptionPane.showMessageDialog(this, "Username should be at least 6 characters.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            if (passwordValue.isEmpty()) {
+            else if (passwordValue.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Password is required.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            if (passwordValue.length() < 6) {
+            else if (passwordValue.length() < 6) {
                 JOptionPane.showMessageDialog(this, "Password should be at least 6 characters.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            if (confirmPasswordValue.isEmpty()) {
+            else if (confirmPasswordValue.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Please confirm your password.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            if (!passwordValue.equals(confirmPasswordValue)) {
+            else if (!passwordValue.equals(confirmPasswordValue)) {
                 JOptionPane.showMessageDialog(this, "Passwords do not match.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            if (region.getSelectedIndex() == 0) {
+            else if (region.getSelectedIndex() == 0) {
                 JOptionPane.showMessageDialog(this, "Please select your region.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }

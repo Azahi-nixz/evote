@@ -409,7 +409,7 @@ separator.setBackground(Color.BLACK);
                     "Approve " + candidate.getName() + " - " + candidate.getParty() + "?",
                     "Confirm Approval", JOptionPane.YES_NO_OPTION);
             if (choice != JOptionPane.YES_OPTION) return;
-            if (CandidateRegistry.approveCandidate(candidate)) { //BE
+           else if (CandidateRegistry.approveCandidate(candidate)) { //BE
                 refreshCandidateList();
                 JOptionPane.showMessageDialog(this, "Candidate approved successfully.",
                         "Approved", JOptionPane.INFORMATION_MESSAGE);
@@ -429,7 +429,7 @@ separator.setBackground(Color.BLACK);
                     "Reject " + candidate.getName() + " - " + candidate.getParty() + "?",
                     "Confirm Rejection", JOptionPane.YES_NO_OPTION);
             if (choice != JOptionPane.YES_OPTION) return;
-            if (CandidateRegistry.rejectCandidate(candidate)) { //BE
+            else if (CandidateRegistry.rejectCandidate(candidate)) { //BE
                 refreshCandidateList();
                 JOptionPane.showMessageDialog(this, "Candidate rejected.",
                         "Rejected", JOptionPane.INFORMATION_MESSAGE);

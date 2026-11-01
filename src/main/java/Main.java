@@ -7,6 +7,7 @@ public class Main {
     public static void main(String[] args) {
 
 
+
         CandidateRegistry.initializeDatabase();
         CandidateRegistry.initialize();
         UserRegistry.loadUsers();

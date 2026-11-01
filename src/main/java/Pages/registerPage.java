@@ -177,7 +177,7 @@ upSeparator.setBackground(Color.BLACK);
                 return;
             }
 
-            if (lNameField.getText().isEmpty()) {
+            else if (lNameField.getText().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Last name is required.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -188,16 +188,16 @@ upSeparator.setBackground(Color.BLACK);
                 return;
             }
 
-            if (genderBox.getSelectedIndex() == 0) {
+            else if (genderBox.getSelectedIndex() == 0) {
                 JOptionPane.showMessageDialog(this, "Please select a gender.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            String fullName = fNameField.getText().trim();
+            String fullName = fNameField.getText();
             if (!mNameField.getText().isEmpty()) {
-                fullName += " " + mNameField.getText().trim();
+                fullName += " " + mNameField.getText();
             }
-            fullName += " " + lNameField.getText().trim();
+            fullName += " " + lNameField.getText();
 
             String voterId = "unknown";
             if (UserRegistry.currentUser != null) {
