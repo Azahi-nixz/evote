@@ -136,8 +136,6 @@ user.setForeground(Color.WHITE);
             e.printStackTrace();
         }
 
-        candidatePanel.revalidate();
-        candidatePanel.repaint();
     }
 
     private void displayCandidates() throws SQLException {
