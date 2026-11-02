@@ -42,18 +42,18 @@ public class AdminPanel extends JFrame implements ActionListener {
         setTitle("E-Vote Admin");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1000, 600);
-setResizable(false);
+        setResizable(false);
         setLayout(null);
-setLocationRelativeTo(null);
+        setLocationRelativeTo(null);
 
         sideUI = new JPanel();
-sideUI.setBackground(Color.BLACK);
+        sideUI.setBackground(Color.BLACK);
         sideUI.setLayout(null);
         sideUI.setBounds(0, 0, 300, 600);
 
         user = new JLabel("Admin Panel", SwingConstants.CENTER);
         user.setFont(new Font("Arial", Font.BOLD, 24));
-user.setForeground(Color.WHITE);
+        user.setForeground(Color.WHITE);
         user.setBounds(0, 0, 300, 80);
         sideUI.add(user);
 
@@ -96,7 +96,7 @@ user.setForeground(Color.WHITE);
 
         pendingCard = new JPanel();
         pendingCard.setLayout(null);
-pendingCard.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+        pendingCard.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         pendingCard.setBounds(40, 100, 190, 125);
         pendingCardTitle = new JLabel("Pending", SwingConstants.CENTER);
         pendingCardTitle.setFont(new Font("Arial", Font.PLAIN, 18));
@@ -110,7 +110,7 @@ pendingCard.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
 
         approvedCard = new JPanel();
         approvedCard.setLayout(null);
-approvedCard.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+        approvedCard.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         approvedCard.setBounds(255, 100, 190, 125);
         approvedCardTitle = new JLabel("Approved", SwingConstants.CENTER);
         approvedCardTitle.setFont(new Font("Arial", Font.PLAIN, 18));
@@ -124,7 +124,7 @@ approvedCard.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
 
         electionCard = new JPanel();
         electionCard.setLayout(null);
-electionCard.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+        electionCard.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         electionCard.setBounds(470, 100, 190, 125);
         electionCardTitle = new JLabel("Election", SwingConstants.CENTER);
         electionCardTitle.setFont(new Font("Arial", Font.PLAIN, 18));
@@ -168,9 +168,9 @@ electionCard.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         pendingSectionLabel.setBounds(35, 60, 300, 25);
         candidatePanel.add(pendingSectionLabel);
 
-        //BE
+
         pendingListModel = new DefaultListModel<>();
-        //FE
+
         pendingJList = new JList<>(pendingListModel);
         pendingJList.setFont(new Font("Arial", Font.PLAIN, 15));
         pendingJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -195,9 +195,9 @@ electionCard.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         approvedSectionLabel.setBounds(35, 335, 300, 25);
         candidatePanel.add(approvedSectionLabel);
 
-        //BE
+
         approvedListModel = new DefaultListModel<>();
-        //FE
+
         approvedJList = new JList<>(approvedListModel);
         approvedJList.setFont(new Font("Arial", Font.PLAIN, 15));
         approvedJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -240,7 +240,7 @@ electionCard.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         electionPanel.add(viewResultsBtn);
 
         separator = new JPanel();
-separator.setBackground(Color.BLACK);
+        separator.setBackground(Color.BLACK);
         separator.setBounds(35, 350, 630, 1);
         electionPanel.add(separator);
 
@@ -279,12 +279,105 @@ separator.setBackground(Color.BLACK);
         setVisible(true);
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == btnDashboard) {
+            showPanel("Dashboard");
+        } else if (e.getSource() == btnCandidates) {
+            showPanel("Candidates");
+        } else if (e.getSource() == btnElection) {
+            showPanel("Election");
+        } else if (e.getSource() == btnLogout) {
+            dispose();
+            UserRegistry.currentUser = null;
+            new LogIn();
+        } else if (e.getSource() == goToCandidatesBtn) {
+            showPanel("Candidates");
+        } else if (e.getSource() == goToElectionBtn) {
+            showPanel("Election");
+        } else if (e.getSource() == approveBtn) {
+            int index = pendingJList.getSelectedIndex();
+            if (index < 0) {
+                JOptionPane.showMessageDialog(this, "Please select a candidate to approve.",
+                        "No Selection", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            Candidate candidate = CandidateRegistry.pendingCandidates.get(index); //BE
+            int choice = JOptionPane.showConfirmDialog(this,
+                    "Approve " + candidate.getName() + " - " + candidate.getParty() + "?",
+                    "Confirm Approval", JOptionPane.YES_NO_OPTION);
+            if (choice != JOptionPane.YES_OPTION) return;
+            if (CandidateRegistry.approveCandidate(candidate)) { //BE
+                refreshCandidateList();
+                JOptionPane.showMessageDialog(this, "Candidate approved successfully.",
+                        "Approved", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Failed to approve. Check database connection.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else if (e.getSource() == rejectBtn) {
+            int index = pendingJList.getSelectedIndex();
+            if (index < 0) {
+                JOptionPane.showMessageDialog(this, "Please select a candidate to reject.",
+                        "No Selection", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            Candidate candidate = CandidateRegistry.pendingCandidates.get(index); //BE
+            int choice = JOptionPane.showConfirmDialog(this,
+                    "Reject " + candidate.getName() + " - " + candidate.getParty() + "?",
+                    "Confirm Rejection", JOptionPane.YES_NO_OPTION);
+            if (choice != JOptionPane.YES_OPTION) return;
+            if (CandidateRegistry.rejectCandidate(candidate)) { //BE
+                refreshCandidateList();
+                JOptionPane.showMessageDialog(this, "Candidate rejected.",
+                        "Rejected", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Failed to reject. Check database connection.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else if (e.getSource() == startBtn) {
+            try {
+                Connection con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+                PreparedStatement stmt = con.prepareStatement(
+                        "UPDATE election_settings SET is_started = TRUE WHERE id = 1");
+                stmt.executeUpdate();
+                con.close();
+                refreshElectionStatus();
+                JOptionPane.showMessageDialog(this, "Election started. Voting is now open.",
+                        "Election Started", JOptionPane.INFORMATION_MESSAGE);
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, "Failed to start election.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+            }
+        } else if (e.getSource() == stopBtn) {
+            try {
+                Connection con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+                PreparedStatement stmt = con.prepareStatement(
+                        "UPDATE election_settings SET is_started = FALSE WHERE id = 1");
+                stmt.executeUpdate();
+                con.close();
+                refreshElectionStatus();
+                JOptionPane.showMessageDialog(this, "Election stopped. Voting is now closed.",
+                        "Election Stopped", JOptionPane.INFORMATION_MESSAGE);
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, "Failed to stop election.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+            }
+        } else if (e.getSource() == viewResultsBtn) {
+            dispose();
+            // new gaboresults();
+        }
+    }
+
     public void showPanel(String panelName) {
         dashboardPanel.setVisible(false);
         candidatePanel.setVisible(false);
         electionPanel.setVisible(false);
         if (panelName.equals("Dashboard")) {
             dashboardPanel.setVisible(true);
+            refreshDashboard();
         } else if (panelName.equals("Candidates")) {
             candidatePanel.setVisible(true);
             refreshCandidateList();
@@ -294,43 +387,43 @@ separator.setBackground(Color.BLACK);
         }
     }
 
-//    private void refreshDashboard() {
-//        CandidateRegistry.loadPendingFromDB();
-//        pendingCardValue.setText(String.valueOf(CandidateRegistry.getPendingCount()));
-//        CandidateRegistry.loadApprovedFromDB();
-//        approvedCardValue.setText(String.valueOf(CandidateRegistry.getApprovedCount()));
-//        try {
-//            Connection con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-//            PreparedStatement stmt = con.prepareStatement(
-//                    "SELECT is_started FROM election_settings WHERE id = 1");
-//            ResultSet rs = stmt.executeQuery();
-//            boolean started = false;
-//            if (rs.next()) {
-//                started = rs.getBoolean("is_started");
-//            }
-//            con.close();
-//            if (started) {
-//                electionCardValue.setText("OPEN");
-//            } else {
-//                electionCardValue.setText("CLOSE");
-//            }
-//        } catch (SQLException e) {
-//            electionCardValue.setText("ERROR");
-//            e.printStackTrace();
-//        }
-//    }
+    private void refreshDashboard() {
+        CandidateRegistry.loadPendingFromDB();
+        pendingCardValue.setText(String.valueOf(CandidateRegistry.getPendingCount()));
+        CandidateRegistry.loadApprovedFromDB();
+        approvedCardValue.setText(String.valueOf(CandidateRegistry.getApprovedCount()));
+        try {
+            Connection con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+            PreparedStatement stmt = con.prepareStatement(
+                    "SELECT is_started FROM election_settings WHERE id = 1");
+            ResultSet rs = stmt.executeQuery();
+            boolean started = false;
+            if (rs.next()) {
+                started = rs.getBoolean("is_started");
+            }
+            con.close();
+            if (started) {
+                electionCardValue.setText("OPEN");
+            } else {
+                electionCardValue.setText("CLOSE");
+            }
+        } catch (SQLException e) {
+            electionCardValue.setText("ERROR");
+            e.printStackTrace();
+        }
+    }
 
     private void refreshCandidateList() {
         CandidateRegistry.loadPendingFromDB();
-        pendingListModel.clear(); //FE
-        for (Candidate c : CandidateRegistry.pendingCandidates) { //BE
-            pendingListModel.addElement(c.getName() + " - " + c.getParty()); //FE
+        pendingListModel.clear();
+        for (Candidate c : CandidateRegistry.pendingCandidates) {
+            pendingListModel.addElement(c.getName() + " - " + c.getParty());
         }
 
         CandidateRegistry.loadApprovedFromDB();
-        approvedListModel.clear(); //FE
-        for (Candidate c : CandidateRegistry.approvedCandidates) { //BE
-            approvedListModel.addElement(c.getName() + " - " + c.getParty()); //FE
+        approvedListModel.clear();
+        for (Candidate c : CandidateRegistry.approvedCandidates) {
+            approvedListModel.addElement(c.getName() + " - " + c.getParty());
         }
 
         if (pendingListModel.size() > 0) {
@@ -373,101 +466,12 @@ separator.setBackground(Color.BLACK);
             if (rs3.next()) {
                 candidates = rs3.getInt("total");
             }
+            con3.close();
             candidateCountLabel.setText("Total Candidates: " + candidates);
 
         } catch (SQLException e) {
             electionStatusLabel.setText("Unable to load election status.");
             e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == btnDashboard) {
-            showPanel("Dashboard");
-        } else if (e.getSource() == btnCandidates) {
-            showPanel("Candidates");
-        } else if (e.getSource() == btnElection) {
-            showPanel("Election");
-        } else if (e.getSource() == btnLogout) {
-            dispose();
-            UserRegistry.currentUser = null;
-            new LogIn();
-        } else if (e.getSource() == goToCandidatesBtn) {
-            showPanel("Candidates");
-        } else if (e.getSource() == goToElectionBtn) {
-            showPanel("Election");
-        } else if (e.getSource() == approveBtn) {
-            int index = pendingJList.getSelectedIndex();
-            if (index < 0) {
-                JOptionPane.showMessageDialog(this, "Please select a candidate to approve.",
-                        "No Selection", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-            Candidate candidate = CandidateRegistry.pendingCandidates.get(index); //BE
-            int choice = JOptionPane.showConfirmDialog(this,
-                    "Approve " + candidate.getName() + " - " + candidate.getParty() + "?",
-                    "Confirm Approval", JOptionPane.YES_NO_OPTION);
-            if (choice != JOptionPane.YES_OPTION) return;
-           else if (CandidateRegistry.approveCandidate(candidate)) { //BE
-                refreshCandidateList();
-                JOptionPane.showMessageDialog(this, "Candidate approved successfully.",
-                        "Approved", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(this, "Failed to approve. Check database connection.",
-                        "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } else if (e.getSource() == rejectBtn) {
-            int index = pendingJList.getSelectedIndex();
-            if (index < 0) {
-                JOptionPane.showMessageDialog(this, "Please select a candidate to reject.",
-                        "No Selection", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-            Candidate candidate = CandidateRegistry.pendingCandidates.get(index); //BE
-            int choice = JOptionPane.showConfirmDialog(this,
-                    "Reject " + candidate.getName() + " - " + candidate.getParty() + "?",
-                    "Confirm Rejection", JOptionPane.YES_NO_OPTION);
-            if (choice != JOptionPane.YES_OPTION) return;
-            else if (CandidateRegistry.rejectCandidate(candidate)) { //BE
-                refreshCandidateList();
-                JOptionPane.showMessageDialog(this, "Candidate rejected.",
-                        "Rejected", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(this, "Failed to reject. Check database connection.",
-                        "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } else if (e.getSource() == startBtn) {
-            try {
-                Connection con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-                PreparedStatement stmt = con.prepareStatement(
-                        "UPDATE election_settings SET is_started = TRUE WHERE id = 1");
-                stmt.executeUpdate();
-                refreshElectionStatus();
-                JOptionPane.showMessageDialog(this, "Election started. Voting is now open.",
-                        "Election Started", JOptionPane.INFORMATION_MESSAGE);
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, "Failed to start election.",
-                        "Error", JOptionPane.ERROR_MESSAGE);
-                ex.printStackTrace();
-            }
-        } else if (e.getSource() == stopBtn) {
-            try {
-                Connection con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-                PreparedStatement stmt = con.prepareStatement(
-                        "UPDATE election_settings SET is_started = FALSE WHERE id = 1");
-                stmt.executeUpdate();
-                refreshElectionStatus();
-                JOptionPane.showMessageDialog(this, "Election stopped. Voting is now closed.",
-                        "Election Stopped", JOptionPane.INFORMATION_MESSAGE);
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, "Failed to stop election.",
-                        "Error", JOptionPane.ERROR_MESSAGE);
-                ex.printStackTrace();
-            }
-        } else if (e.getSource() == viewResultsBtn) {
-            dispose();
-           // new gaboresults();
         }
     }
 }
