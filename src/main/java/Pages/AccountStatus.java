@@ -20,7 +20,7 @@ public class AccountStatus extends JFrame implements ActionListener {
         setTitle("E-Vote");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1000, 600);
-    setResizable(false);
+        setResizable(false);
         setLayout(null);
         setLocationRelativeTo(null);
 

@@ -367,7 +367,7 @@ public class AdminPanel extends JFrame implements ActionListener {
             }
         } else if (e.getSource() == viewResultsBtn) {
             dispose();
-            // new gaboresults();
+            new gaboresults();
         }
     }
 

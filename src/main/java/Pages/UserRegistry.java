@@ -10,6 +10,9 @@ public class UserRegistry {
     public static final Map<String, Voter> voters = new HashMap<>();
     public static String currentUser = null;
 
+    // Graph to represent connections between voters and candidates
+    public static VoterCandidateGraph graph = new VoterCandidateGraph();
+
     public static void loadUsers() {
 
         try {
@@ -29,6 +32,24 @@ public class UserRegistry {
 
         } catch (SQLException e) {
             System.out.println("Failed to load user cache.");
+            e.printStackTrace();
+        }
+
+        // Load existing votes into graph
+        try {
+            Connection con = dbconnection.connect();
+            PreparedStatement stmt = con.prepareStatement(
+                    "SELECT username, candidate_id FROM votes");
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                String voterId = rs.getString("username");
+                String candidateId = String.valueOf(rs.getInt("candidate_id"));
+                graph.addEdge(voterId, candidateId);
+            }
+
+            con.close();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }

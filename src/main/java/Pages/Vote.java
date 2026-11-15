@@ -144,11 +144,150 @@ public class Vote extends JFrame implements ActionListener {
             candidatePanel.setPreferredSize(new Dimension(630, 400));
         } else {
             statusLabel.setText("Voting is currently OPEN.");
-
+            displayCandidates();
         }
 
+        candidatePanel.revalidate();
+        candidatePanel.repaint();
     }
 
+    private void displayCandidates() {
+
+        List<Integer> ids = new ArrayList<>();
+        boolean alreadyVoted = hasAlreadyVoted();
+        int cardH = 115;
+        int gap = 10;
+        int y = 10;
+
+        try {
+            Connection con = dbconnection.connect();
+            PreparedStatement stmt = con.prepareStatement(
+                    "SELECT id, name, party, position FROM candidates");
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int candidateId = rs.getInt("id");
+                String cName = rs.getString("name");
+                String party = rs.getString("party");
+                String position = rs.getString("position");
+
+                ids.add(candidateId);
+
+                JPanel card = new JPanel();
+                card.setLayout(null);
+                card.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
+                card.setBounds(10, y, 615, cardH);
+
+                JLabel lblName = new JLabel(cName);
+                lblName.setFont(new Font("Arial", Font.BOLD, 19));
+                lblName.setBounds(15, 10, 390, 28);
+
+                JLabel lblParty = new JLabel("Party: " + party);
+                lblParty.setFont(new Font("Arial", Font.PLAIN, 14));
+                lblParty.setBounds(15, 42, 390, 22);
+
+                JLabel lblPosition = new JLabel("Position: " + position);
+                lblPosition.setFont(new Font("Arial", Font.PLAIN, 14));
+                lblPosition.setBounds(15, 68, 390, 22);
+
+                JButton voteBtn = new JButton("Vote");
+                voteBtn.setBounds(455, 35, 120, 40);
+                voteBtn.setEnabled(!alreadyVoted);
+                voteBtn.addActionListener(ev -> castVote(candidateId, voteBtn));
+
+                card.add(lblName);
+                card.add(lblParty);
+                card.add(lblPosition);
+                card.add(voteBtn);
+
+                candidatePanel.add(card);
+                y += cardH + gap;
+            }
+
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        if (ids.isEmpty()) {
+            noCandidatesLabel = new JLabel("No candidates have been added yet.", SwingConstants.CENTER);
+            noCandidatesLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+            noCandidatesLabel.setBounds(0, 150, 630, 30);
+            candidatePanel.add(noCandidatesLabel);
+            y = 400;
+        }
+
+        candidatePanel.setPreferredSize(new Dimension(630, y + 10));
+
+        if (alreadyVoted) {
+            statusLabel.setText("You have already voted.");
+        }
+    }
+
+    private boolean hasAlreadyVoted() {
+        try {
+            Connection con = dbconnection.connect();
+            PreparedStatement stmt = con.prepareStatement(
+                    "SELECT id FROM votes WHERE username = ? LIMIT 1");
+            stmt.setString(1, loggedInUsername);
+            ResultSet rs = stmt.executeQuery();
+            boolean voted = rs.next();
+            con.close();
+            return voted;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private void castVote(int candidateId, JButton voteBtn) {
+
+        if (!UserRegistry.isVerified(loggedInUsername)) {
+            JOptionPane.showMessageDialog(this, "Your account is not verified.",
+                    "Verification Required", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int choice = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to vote for this candidate?",
+                "Confirm Vote", JOptionPane.YES_NO_OPTION);
+
+        if (choice != JOptionPane.YES_OPTION) return;
+
+        String sql = "INSERT INTO votes (username, candidate_id) "
+                + "SELECT ?, ? FROM election_settings "
+                + "WHERE id = 1 AND is_started = TRUE "
+                + "AND EXISTS (SELECT 1 FROM users WHERE username = ? AND is_verified = TRUE)";
+
+        try {
+            Connection con = dbconnection.connect();
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setString(1, loggedInUsername);
+            stmt.setInt(2, candidateId);
+            stmt.setString(3, loggedInUsername);
+            int rows = stmt.executeUpdate();
+            con.close();
+
+            if (rows > 0) {
+                // Add edge to voter-candidate graph
+                UserRegistry.graph.addEdge(loggedInUsername, String.valueOf(candidateId));
+                JOptionPane.showMessageDialog(this, "Your vote has been recorded successfully!",
+                        "Vote Submitted", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Your vote was not recorded. Voting may have closed or you already voted.",
+                        "Vote Unsuccessful", JOptionPane.WARNING_MESSAGE);
+            }
+            refreshVotingPage();
+
+        } catch (SQLIntegrityConstraintViolationException e) {
+            JOptionPane.showMessageDialog(this, "You have already voted.",
+                    "Duplicate Vote", JOptionPane.WARNING_MESSAGE);
+            refreshVotingPage();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Unable to submit your vote. Please try again.",
+                    "Database Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
 }
-
-

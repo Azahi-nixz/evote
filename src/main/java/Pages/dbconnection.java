@@ -76,7 +76,6 @@ public class dbconnection {
                 stmt.executeUpdate();
             }
 
-            // Seed election_settings if empty
             PreparedStatement check = con.prepareStatement(
                     "SELECT COUNT(*) FROM election_settings");
             ResultSet rs = check.executeQuery();
