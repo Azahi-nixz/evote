@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class VoterCandidateGraph {
 
-    // Adjacency list: voter ID -> list of candidate IDs they voted for
+    // Adjacency list: voter ID -> LinkedList of "age -> candidateName" labels
     private Map<String, LinkedList<String>> adjacencyList;
 
     VoterCandidateGraph() {
@@ -19,12 +19,14 @@ public class VoterCandidateGraph {
         }
     }
 
-    public void addEdge(String voterId, String candidateId) {
+    // Edge label is "age -> candidateName"
+    public void addEdge(String voterId, int age, String candidateName) {
         addVoter(voterId);
-        adjacencyList.get(voterId).add(candidateId);
+        String label = "Age " + age + " -> " + candidateName;
+        adjacencyList.get(voterId).add(label);
     }
 
-    public LinkedList<String> getVotesFor(String voterId) {
+    public LinkedList<String> getEdgesFor(String voterId) {
         if (adjacencyList.containsKey(voterId)) {
             return adjacencyList.get(voterId);
         }
@@ -38,6 +40,10 @@ public class VoterCandidateGraph {
 
     public int getTotalVoters() {
         return adjacencyList.size();
+    }
+
+    public Map<String, LinkedList<String>> getAdjacencyList() {
+        return adjacencyList;
     }
 
     @Override

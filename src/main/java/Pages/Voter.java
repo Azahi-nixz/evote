@@ -5,11 +5,21 @@ public class Voter {
     private String voterId;
     private String name;
     private boolean registered;
+    private int age;
 
-    public Voter(String voterId, String name, boolean registered) {
+    public Voter(String voterId, String name, boolean registered, int age) {
         this.voterId = voterId;
         this.name = name;
         this.registered = registered;
+        this.age = age;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 
     public String getVoterId() {

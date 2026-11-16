@@ -269,8 +269,28 @@ public class Vote extends JFrame implements ActionListener {
             con.close();
 
             if (rows > 0) {
-                // Add edge to voter-candidate graph
-                UserRegistry.graph.addEdge(loggedInUsername, String.valueOf(candidateId));
+                // Add edge to voter-candidate graph using voter age and candidate name
+                Voter voter = UserRegistry.getVoter(loggedInUsername);
+                int voterAge = 0;
+                if (voter != null) {
+                    voterAge = voter.getAge();
+                }
+                // Look up candidate name from DB
+                String candidateName = "Candidate " + candidateId;
+                try {
+                    Connection conLookup = dbconnection.connect();
+                    PreparedStatement lookupStmt = conLookup.prepareStatement(
+                            "SELECT name FROM candidates WHERE id = ?");
+                    lookupStmt.setInt(1, candidateId);
+                    ResultSet lookupRs = lookupStmt.executeQuery();
+                    if (lookupRs.next()) {
+                        candidateName = lookupRs.getString("name");
+                    }
+                    conLookup.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+                UserRegistry.graph.addEdge(loggedInUsername, voterAge, candidateName);
                 JOptionPane.showMessageDialog(this, "Your vote has been recorded successfully!",
                         "Vote Submitted", JOptionPane.INFORMATION_MESSAGE);
             } else {

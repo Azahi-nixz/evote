@@ -39,6 +39,7 @@ public class dbconnection {
                     + "username VARCHAR(100) NOT NULL UNIQUE, "
                     + "password VARCHAR(100) NOT NULL, "
                     + "region VARCHAR(100), "
+                    + "age INT DEFAULT 0, "
                     + "is_verified TINYINT(1) DEFAULT 0"
                     + ")",
 
@@ -89,6 +90,17 @@ public class dbconnection {
 
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+
+        // Add age column to users if it doesn't exist yet
+        try {
+            Connection con = connect();
+            PreparedStatement stmt = con.prepareStatement(
+                    "ALTER TABLE users ADD COLUMN age INT DEFAULT 0");
+            stmt.executeUpdate();
+            con.close();
+        } catch (SQLException e) {
+            // Column already exists - ignore
         }
     }
 }

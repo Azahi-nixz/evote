@@ -193,19 +193,29 @@ upSeparator.setBackground(Color.BLACK);
                 return;
             }
 
-            String fullName = fNameField.getText();
+            String fullName = fNameField.getText().trim();
             if (!mNameField.getText().isEmpty()) {
-                fullName += " " + mNameField.getText();
+                fullName += " " + mNameField.getText().trim();
             }
-            fullName += " " + lNameField.getText();
+            fullName += " " + lNameField.getText().trim();
+
+            // Calculate age from birth date
+            java.util.Date birthDateValue = (java.util.Date) birthDateSpinner.getValue();
+            java.util.Calendar dob = java.util.Calendar.getInstance();
+            dob.setTime(birthDateValue);
+            java.util.Calendar today = java.util.Calendar.getInstance();
+            int age = today.get(java.util.Calendar.YEAR) - dob.get(java.util.Calendar.YEAR);
+            if (today.get(java.util.Calendar.DAY_OF_YEAR) < dob.get(java.util.Calendar.DAY_OF_YEAR)) {
+                age--;
+            }
 
             String voterId = "unknown";
             if (UserRegistry.currentUser != null) {
                 voterId = UserRegistry.currentUser;
             }
 
-            UserRegistry.registerVoter(new Voter(voterId, fullName, true));
-            UserRegistry.updateUser(voterId, true);
+            UserRegistry.registerVoter(new Voter(voterId, fullName, true, age));
+            UserRegistry.updateUser(voterId, true, age);
 
             JOptionPane.showMessageDialog(this, "Account verified successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
             dispose();

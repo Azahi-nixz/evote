@@ -3,8 +3,13 @@ package Pages;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.*;
 
 public class UserInterface extends JFrame implements ActionListener {
+
+    private final String DB_URL = "jdbc:mysql://localhost:3306/swing_demo";
+    private final String DB_USER = "root";
+    private final String DB_PASSWORD = "";
 
     private JPanel sideUI, mainUI;
     private JLabel user;
@@ -127,25 +132,33 @@ public class UserInterface extends JFrame implements ActionListener {
         electionPanel.setLayout(null);
         electionPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         electionPanel.setBounds(40, 380, 620, 100);
+
         electionName = new JLabel("Election");
         electionName.setFont(new Font("Arial", Font.BOLD, 18));
         electionName.setBounds(20, 15, 350, 30);
+
         electionDescription = new JLabel("Not available yet.");
         electionDescription.setFont(new Font("Arial", Font.PLAIN, 14));
         electionDescription.setBounds(20, 50, 300, 25);
+
         viewButton = new JButton("View Candidates");
         viewButton.setFont(new Font("Arial", Font.BOLD, 14));
         viewButton.setEnabled(false);
         viewButton.setBounds(430, 25, 165, 45);
+
         electionPanel.add(electionName);
         electionPanel.add(electionDescription);
         electionPanel.add(viewButton);
         mainUI.add(electionPanel);
 
+      
+        refreshElectionStatus();
+
         //Add to ActionListener
         btnHome.addActionListener(this);
         btnVote.addActionListener(this);
         btnAccount.addActionListener(this);
+        viewButton.addActionListener(this);
 
         setVisible(true);
     }
@@ -158,6 +171,59 @@ public class UserInterface extends JFrame implements ActionListener {
         } else if (e.getSource() == btnAccount) {
             dispose();
             new AccountStatus();
+        } else if (e.getSource() == viewButton) {
+            if (viewButton.getText().equals("Vote Now")) {
+                dispose();
+                new Vote(UserRegistry.currentUser);
+            } else {
+                dispose();
+                new ElectionResults();
+            }
+        }
+    }
+
+    private void refreshElectionStatus() {
+        try {
+            Connection con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+
+            PreparedStatement stmt = con.prepareStatement(
+                    "SELECT is_started FROM election_settings WHERE id = 1");
+            ResultSet rs = stmt.executeQuery();
+            boolean started = false;
+            if (rs.next()) {
+                started = rs.getBoolean("is_started");
+            }
+
+            PreparedStatement countStmt = con.prepareStatement(
+                    "SELECT COUNT(*) AS total FROM votes");
+            ResultSet countRs = countStmt.executeQuery();
+            int voteCount = 0;
+            if (countRs.next()) {
+                voteCount = countRs.getInt("total");
+            }
+
+            con.close();
+
+            if (started) {
+                status.setText("OPEN");
+                electionDescription.setText("Voting is currently open.");
+                viewButton.setText("Vote Now");
+                viewButton.setEnabled(true);
+            } else if (voteCount > 0) {
+                // Election ended and results exist
+                status.setText("ENDED");
+                electionDescription.setText("Election has ended. View the results.");
+                viewButton.setText("View Results");
+                viewButton.setEnabled(true);
+            } else {
+                status.setText("CLOSE");
+                electionDescription.setText("Not available yet.");
+                viewButton.setText("View Candidates");
+                viewButton.setEnabled(false);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }
